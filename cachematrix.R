@@ -1,36 +1,47 @@
-## The following functions compute and cache the inverse matrix. It able to reduce 
-## the computation time compared to calculation with loops.
-#La primera funcion crea una matrix especial para almacenar en cache
-#Segunda funcion coge la matrix anterior y checks si ha sido calculada
-#si es asi coge el resultado de cache sino la calcula y pone el resuldo en cache
-## Write a short comment describing this function
-## 
-## The operators <<- and ->> are normally only used in functions, and cause a search 
-## to made through parent environments for an existing definition of the variable
-## being assigned. If such a variable is found (and its binding is not locked) 
-## then its value is redefined
+## The following functions computes and caches the inverse matrix. 
+##The "makeCacheMatrix" function creates a special "matrix" object that cache 
+##its inverse. 
+##The "cacheSolve" function computes the inverse of the special "matrix" returned by
+##makeCacheMatrix previous. If the inverse has already been calculated (and the matrix 
+##has not changed), then the cacheSolve retrieve the inverse from the cache.
+
+
+##The makeCacheMatrix function has several functions and variables.
+
+## m: it is the matrix which It is null or has the value of the inverse of the
+##matrix x if recalculated by cacheSolve. Not really recalculates the
+##inverse, as it seeks bind in parent environments (in this case a function). 
+##This is achieved because the variable is assigned by <<-. The operator <<- causes a 
+##search to made through parent environments for an existing definition of the variable
+##being assigned.
+
+##The functions defined in makeCacheMatrix the comment from the cacheSolve function.
 
 makeCacheMatrix <- function(x = matrix()) {
         m <- NULL
-# y debe ser la matrix en cache?      
         set <- function(y) {
                 x <<- y
                 m <<- NULL
         }
         get <- function() x
-         setinverse <- function(inverse)
-                 m <<- inverse
-         getinverse <- function()
-                 m
-         list(set = set, get = get,
-              setinverse = setinverse,
-              getinverse = getinverse)
+        setinverse <- function(inverse)
+                m <<- inverse
+        getinverse <- function()
+                m
+        list(set = set, get = get,
+             setinverse = setinverse,
+             getinverse = getinverse)
         
-
+        
 }
 
+##The cacheSolve function has two possibilities. In essence that gives value m
+##with x$getinverse(), from the list generated in makeCacheMatrix. If I was
+##found, then m is not null, get inverse, "m", of parent environment. And it isn't
+##calculated, so it you reduce computation time.
 
-## Write a short comment describing this function
+##The other possibility is that m is zero because it has not been previously found 
+##then calculated using the solve () function, but taking the varible from x$get().
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
@@ -45,3 +56,8 @@ cacheSolve <- function(x, ...) {
         m
         
 }
+
+
+##This is an example which able to reduce the computation time compared to calculation
+##with loops. We used lexical scoping.
+
